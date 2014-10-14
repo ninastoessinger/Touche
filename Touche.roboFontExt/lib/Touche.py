@@ -139,46 +139,7 @@ class ToucheTool():
                     return True
         return False
         
-    def _sharesPoints(self, g1, g2):
-        # this fires if 2 on-curve points from the two glyphs respectively come to lie exactly on top of each other
-        onCurvePointList = {}
-        allPointList = {}
-        dist = self.distanceDict[(g1, g2)]
-        pens = {
-            g1: shiftedDigestPointPen.ShiftedDigestPointPen((0,0)),
-            g2: shiftedDigestPointPen.ShiftedDigestPointPen((dist,0))}
-        for g in [g1, g2]:
-            g.drawPoints(pens[g])
-            onCurvePointList[g] = pens[g].getPointDigest()
-            allPointList[g] = pens[g].getPointDigest(onCurveOnly=False)
-        if len(onCurvePointList[g1]) > 0 and len(onCurvePointList[g2]) > 0:
-            for p1 in onCurvePointList[g1]:
-                for p2 in onCurvePointList[g2]:
-                    if p1[0] == p2[0]:
-                        return True
-                    
-        # Check if an on-curve point touches the other contour in a place where there isn't a point
-        directions = [(g1, g2), (g2, g1)]
-        for item1, item2 in directions:
-            if len(onCurvePointList[item1]) > 0 and len(allPointList[item2]) > 0:
-                for p1 in onCurvePointList[item1]:
-                    p2s = allPointList[item2]
-                    for i in range(len(p2s)):
-                        found = False
-                        h = i-1 if i > 0 else len(p2s) - 1
-                        if p2s[i][1] == "line":
-                            startPoint = p2s[h][0] 
-                            endPoint   = p2s[i][0] 
-                            found = findPointOnSegment.findPointOnLine(startPoint, endPoint, p1[0])
-                        # and curves? see below *
-                        if found:
-                                return True
-        return False
-        """
-        * This does not check for cases (for now) where a contour outside of a point touches a contour outside of a point, or a corner touches a curve (outside of a point) in the second contour, without producing an overlap which would have been caught earlier. It seems quite unlikely that those would exactly touch in one coordinate (I can’t even come up with a good testing scenario for this). Or should coordinates be rounded, allowing near-misses to qualify too? Not sure.
-        """
-        
-        
+            
     def _booleanCheck(self, g1, g2):
         # build shifted glyph
         tmpShifted = RGlyph()
@@ -190,10 +151,61 @@ class ToucheTool():
             # now we know they don't *overlap*, but maybe they just touch along a collinear vector?
             # make union + compare contour count
             t = tmpShifted | g1
-            if len(t) >= len(g2) + len(g1):
-                return False
+            if len(t) < len(g2) + len(g1):
+                return True
+            return False
         return True
         
+        
+    def _sharesPoints(self, g1, g2):
+        # this fires if 2 on-curve points from the two glyphs respectively come to lie exactly on top of each other
+        # this makes false positives
+        onCurvePointList = {}
+        allPointList = {}
+        if (g1 != g2): # false positives for successions of the same glyph
+            dist = self.distanceDict[(g1, g2)]
+            #print "dist /%s/%s:" % (g1.name, g2.name), dist
+            pens = {
+                g1: shiftedDigestPointPen.ShiftedDigestPointPen((0,0)),
+                g2: shiftedDigestPointPen.ShiftedDigestPointPen((dist,0))}
+            for g in [g1, g2]:
+                g.drawPoints(pens[g])
+                onCurvePointList[g] = pens[g].getPointDigest()
+                allPointList[g] = pens[g].getPointDigest(onCurveOnly=False)
+            if len(onCurvePointList[g1]) > 0 and len(onCurvePointList[g2]) > 0:
+                for p1 in onCurvePointList[g1]:
+                    for p2 in onCurvePointList[g2]:
+                        if p1[0] == p2[0]:
+                            return True
+                    
+            # Check if an on-curve point touches the other contour in a place where there isn't a point
+            # I'm retiring this for the moment because it makes false positives and does more harm than good
+            """
+            directions = [(g1, g2), (g2, g1)]
+            for item1, item2 in directions:
+                if len(onCurvePointList[item1]) > 0 and len(allPointList[item2]) > 0:
+                    for p1 in onCurvePointList[item1]:
+                        print "checking point at coord", p1[0], "in glyph", item1.name
+                        #p2s = allPointList[item2]
+                        p2s = onCurvePointList[item2]
+                        for i in range(len(p2s)):
+                            found = False
+                            h = i-1 if i > 0 else len(p2s) - 1
+                            if p2s[i][1] == "line":
+                                startPoint = p2s[h][0] 
+                                endPoint   = p2s[i][0] 
+                                found = findPointOnSegment.findPointOnLine(startPoint, endPoint, p1[0])
+                            # and curves? see below *
+                            if found:
+                                #print "found: point at", p1[0], "touches line between", startPoint, "and", endPoint
+                                return True
+            """
+        return False
+        """
+        * This does not check for cases (for now) where a contour outside of a point touches a contour outside of a point, or a corner touches a curve (outside of a point) in the second contour, without producing an overlap which would have been caught earlier. It seems quite unlikely that those would exactly touch in one coordinate (I can’t even come up with a good testing scenario for this). Or should coordinates be rounded, allowing near-misses to qualify too? Not sure.
+        """
+        
+
         
     # kerning stuff
         
