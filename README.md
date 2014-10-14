@@ -7,6 +7,6 @@ Touché makes no assumptions about the relevance of pairs; and it does not chang
 In this very first version, there are probably bugs I haven’t caught and cases that may not be evaluating correctly yet; reports welcome. Please be aware that if you’re checking large numbers of glyphs, it will take some time: on my MacBook Pro, checking an entire font of around 500 glyphs is taking anywhere between 40 seconds and a few minutes. You can also just check a subsection of glyphs, which should then be significantly faster. I hope to improve performance over time; meanwhile, if it frustrates you too much, just think how impossibly long it would take to check everything against everything, manually. :-)
 
 Notes:
-- Only made for use with cubic curves for now.
+- Only tested with cubic curves.
 - No guarantees that it will catch everything; some more finicky/theoretical edge cases have not been covered yet (there are some comments in the code).
 
