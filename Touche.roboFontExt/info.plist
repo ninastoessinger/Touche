@@ -32,5 +32,9 @@
 	<real>1413314720.6144221</real>
 	<key>version</key>
 	<string>1.0</string>
+	<key>repository</key>
+    <string>ninastoessinger/Touche</string>
+    <key>extensionPath</key>
+    <string>Touche.roboFontExt</string>
 </dict>
 </plist>
