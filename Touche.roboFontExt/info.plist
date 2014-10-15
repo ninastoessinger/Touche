@@ -29,9 +29,9 @@
 	<key>name</key>
 	<string>Touche</string>
 	<key>timeStamp</key>
-	<real>1413314720.6144221</real>
+	<real>1413371723</real>
 	<key>version</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>repository</key>
     <string>ninastoessinger/Touche</string>
     <key>extensionPath</key>
