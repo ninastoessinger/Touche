@@ -173,8 +173,8 @@ class Touche(object):
         font = CurrentFont()
         a, b = font['a'], font['b']
         touche = Touche(font)
-        touche.checkPair()
-        touche.findTouchingPairs([font['a'], font['b']])
+        touche.checkPair(a, b)
+        touche.findTouchingPairs([a, b])
     
     Public methods: checkPair, findTouchingPairs
     """
