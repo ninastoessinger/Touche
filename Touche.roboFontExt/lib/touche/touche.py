@@ -79,7 +79,6 @@ class Touche(object):
         # draw the glyph into the pen
         g2.draw(pen2)
 
-        # loop over all possible overlapping segments
         for segment1 in pen1.segments:
             for segment2 in pen2.segments:
                 if len(segment1) == 4 and len(segment2) == 4:
