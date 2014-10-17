@@ -3,8 +3,8 @@
 """
  Touché! 
  RoboFont extension that detects and displays glyph pairs whose bodies overlap or touch.
- v1.2 - improved and much faster – profuse thanks to Frederik Berlaen
  Nina Stössinger, October 2014
+ v1.2andahalf - thanks to Frederik Berlaen, Jack Jennings, Petr van Blokland
 """
 
 import findPossibleOverlappingSegmentsPen
@@ -188,6 +188,13 @@ class Touche(object):
 
         Returns a list of tuples containing the names of overlapping glyphs
         """
+        
+        # lookup all sidebearings
+        lsb, rsb = ({} for i in range(2))
+        for g in glyphs:
+            lsb[g], rsb[g] = g.leftMargin, g.rightMargin
+        self.lsb, self.rsb = lsb, rsb
+        
         pairs = [(g1, g2) for g1 in glyphs for g2 in glyphs]
         return [(g1.name, g2.name) for (g1, g2) in pairs if self.checkPair(g1, g2)]
 
@@ -201,6 +208,10 @@ class Touche(object):
         """
 
         kern = self.getKerning(g1, g2)
+        
+        # Check sidebearings first (PvB's idea)
+        if self.rsb[g1] + self.lsb[g2] + kern > 0:
+            return False
 
         # get the bounds and check them
         bounds1 = g1.box
