@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from fontTools.pens.basePen import BasePen
 from fontTools.misc.arrayTools import pointInRect
 

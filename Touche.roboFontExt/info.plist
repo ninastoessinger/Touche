@@ -6,7 +6,7 @@
 	<array>
 		<dict>
 			<key>path</key>
-			<string>Touche.py</string>
+			<string>openTouche.py</string>
 			<key>preferredName</key>
 			<string>Touche</string>
 			<key>shortKey</key>
