@@ -23,7 +23,7 @@
 	<key>html</key>
 	<false/>
 	<key>launchAtStartUp</key>
-	<integer></integer>
+	<integer>0</integer>
 	<key>mainScript</key>
 	<string></string>
 	<key>name</key>
