@@ -22,6 +22,10 @@ class Touche(object):
     def __init__(self, font):
         self.font = font
         self.flatKerning = font.naked().flatKerning
+        
+    def __del__(self):
+        self.font = None
+        self.flatKerning = None
 
     def findTouchingPairs(self, glyphs):
         """Finds all touching pairs in a list of glyphs.
