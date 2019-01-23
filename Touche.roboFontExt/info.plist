@@ -8,7 +8,7 @@
 			<key>path</key>
 			<string>openTouche.py</string>
 			<key>preferredName</key>
-			<string>Touche</string>
+			<string>Touché</string>
 			<key>shortKey</key>
 			<array>
 				<integer>1703936</integer>
@@ -31,7 +31,7 @@
 	<key>timeStamp</key>
 	<real>1413573674</real>
 	<key>version</key>
-	<string>1.3</string>
+	<string>1.4</string>
 	<key>repository</key>
     <string>ninastoessinger/Touche</string>
     <key>extensionPath</key>
