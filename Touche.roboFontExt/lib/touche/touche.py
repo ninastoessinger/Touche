@@ -8,8 +8,6 @@ from fontTools.misc.arrayTools import offsetRect, sectRect
 from lib.tools.bezierTools import intersectCubicCubic, intersectCubicLine, intersectLineLine
 from mojo.roboFont import version
 
-print('##############ZZZZZZZZZZZZZZ!!!!!!!')
-
 class Touche(object):
     """Checks a font for touching glyphs.
 
