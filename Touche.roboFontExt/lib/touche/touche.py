@@ -1,28 +1,29 @@
 # coding=utf-8
 
-import findPossibleOverlappingSegmentsPen
-reload(findPossibleOverlappingSegmentsPen)
+from __future__ import absolute_import
+
+from .findPossibleOverlappingSegmentsPen import FindPossibleOverlappingSegmentsPen
 
 from fontTools.misc.arrayTools import offsetRect, sectRect
 from lib.tools.bezierTools import intersectCubicCubic, intersectCubicLine, intersectLineLine
-
+from mojo.roboFont import version
 
 class Touche(object):
     """Checks a font for touching glyphs.
-    
+
         font = CurrentFont()
         a, b = font['a'], font['b']
         touche = Touche(font)
         touche.checkPair(a, b)
         touche.findTouchingPairs([a, b])
-    
+
     Public methods: checkPair, findTouchingPairs
     """
 
     def __init__(self, font):
         self.font = font
         self.flatKerning = font.naked().flatKerning
-        
+
     def __del__(self):
         self.font = None
         self.flatKerning = None
@@ -32,13 +33,13 @@ class Touche(object):
 
         Returns a list of tuples containing the names of overlapping glyphs
         """
-        
+
         # lookup all sidebearings
         lsb, rsb = ({} for i in range(2))
         for g in glyphs:
             lsb[g], rsb[g] = g.leftMargin, g.rightMargin
         self.lsb, self.rsb = lsb, rsb
-        
+
         pairs = [(g1, g2) for g1 in glyphs for g2 in glyphs]
         return [(g1.name, g2.name) for (g1, g2) in pairs if self.checkPair(g1, g2)]
 
@@ -52,18 +53,18 @@ class Touche(object):
         """
 
         kern = self.getKerning(g1, g2)
-        
+
         # Check sidebearings first (PvB's idea)
         if self.rsb[g1] + self.lsb[g2] + kern > 0:
             return False
 
         # get the bounds and check them
-        bounds1 = g1.box
+        bounds1 = g1.bounds if version > '2.0' else g1.box
         if bounds1 is None:
             return False
-        bounds2 = g2.box
+        bounds2 = g2.bounds if version > '2.0' else g2.box
         if bounds2 is None:
-            return False    
+            return False
 
         # shift bounds2
         bounds2 = offsetRect(bounds2, g1.width+kern, 0)
@@ -75,11 +76,13 @@ class Touche(object):
         bounds1 = offsetRect(bounds1, -g2.width-kern, 0)
 
         # create a pen for g1 with a shifted rect, draw the glyph into the pen
-        pen1 = findPossibleOverlappingSegmentsPen.FindPossibleOverlappingSegmentsPen(g1.getParent(), bounds2)
+        f1 = g1.font if version > '3.1' else g1.getParent()
+        pen1 = FindPossibleOverlappingSegmentsPen(f1, bounds2)
         g1.draw(pen1)
 
         # create a pen for g2 with a shifted rect and move each found segment with the width and kerning
-        pen2 = findPossibleOverlappingSegmentsPen.FindPossibleOverlappingSegmentsPen(g2.getParent(), bounds1, (g1.width+kern, 0))
+        f2 = g1.font if version > '3.1' else g2.getParent()
+        pen2 = FindPossibleOverlappingSegmentsPen(f2, bounds1, (g1.width+kern, 0))
         # draw the glyph into the pen
         g2.draw(pen2)
 
